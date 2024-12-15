@@ -3,32 +3,22 @@ input = sys.stdin.readline
 
 n = int(input())
 works = []
-total_work_time = 0
+
 for _ in range(n):
-    t , s = map(int, input().split())
-    total_work_time += t
+    t, s = map(int, input().split())
     works.append((t, s))
+
+# 작업을 마감 시간이 빠른 순으로 정렬
 works.sort(key=lambda x: x[1])
-last_time = works[-1][1]
 
+# 마지막 시간에서 거꾸로 계산
+current_time = works[-1][1]
 
-# 1,000 * 1,000,000 O(N2)
-# 총 걸리는 시간 > 제일 마지막시간  ->불가능
-# 마지막 시간 - 총 걸리는 시간 부터 0까지
-if total_work_time > last_time:
-    print(-1)
-    quit()
-    
-start_time = last_time - total_work_time
-while start_time >= 0 :
-    now_time = start_time
-    for time , end_time in works:
-        if now_time + time > end_time:
-            start_time-=1
-            break
-        else:
-            now_time += time
-    if start_time + total_work_time == now_time:
-        print(start_time)
-        quit()
-print(-1)
+for t, s in reversed(works):
+    # 작업이 가능한 가장 늦은 시작 시간을 갱신
+    current_time = min(current_time, s) - t
+    if current_time < 0:
+        print(-1)
+        exit()
+
+print(current_time)
